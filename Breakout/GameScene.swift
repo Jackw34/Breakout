@@ -12,11 +12,14 @@ var brick = SKSpriteNode()
 var paddle = SKSpriteNode()
 var ball = SKShapeNode()
 var loseZone = SKSpriteNode()
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView)  {
+        physicsWorld.contactDelegate = self
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         createBackground()
         resetGame()
-        makeLoseZone() 
+        makeLoseZone()
+        kickBall()
         // this stuff happens once (when the app opens)
     }
     func resetGame() {
@@ -25,6 +28,10 @@ class GameScene: SKScene {
         makePaddle()
         makeBrick()
     }
+    func kickBall() {
+           ball.physicsBody?.isDynamic = true
+           ball.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 5))
+       }
     func createBackground() {
         let stars = SKTexture(imageNamed: "Stars")
         for i in 0...1 {
@@ -75,22 +82,22 @@ class GameScene: SKScene {
         addChild(paddle)
     }
     func makeBrick() {
-            brick.removeFromParent()    // remove the brick, if it exists
-            brick = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 20))
-            brick.position = CGPoint(x: frame.midX, y: frame.maxY - 50)
-            brick.name = "brick"
-            brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
-            brick.physicsBody?.isDynamic = false
-            addChild(brick)
-        }
+        brick.removeFromParent()    // remove the brick, if it exists
+        brick = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 20))
+        brick.position = CGPoint(x: frame.midX, y: frame.maxY - 50)
+        brick.name = "brick"
+        brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
+        brick.physicsBody?.isDynamic = false
+        addChild(brick)
+    }
     func makeLoseZone() {
-           loseZone = SKSpriteNode(color: .red, size: CGSize(width: frame.width, height: 50))
-           loseZone.position = CGPoint(x: frame.midX, y: frame.minY + 25)
-           loseZone.name = "loseZone"
-           loseZone.physicsBody = SKPhysicsBody(rectangleOf: loseZone.size)
-           loseZone.physicsBody?.isDynamic = false
-           addChild(loseZone)
-       }
-
-
+        loseZone = SKSpriteNode(color: .red, size: CGSize(width: frame.width, height: 50))
+        loseZone.position = CGPoint(x: frame.midX, y: frame.minY + 25)
+        loseZone.name = "loseZone"
+        loseZone.physicsBody = SKPhysicsBody(rectangleOf: loseZone.size)
+        loseZone.physicsBody?.isDynamic = false
+        addChild(loseZone)
+    }
 }
+
+
